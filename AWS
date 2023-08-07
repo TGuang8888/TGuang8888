@@ -1,0 +1,58 @@
+#Mapper
+
+#!/usr/bin/env python
+
+import sys
+
+def mapper(value):
+    output = value.strip().split(',')
+    book_id = output[0]
+    book_rating = output[1]
+
+    try:
+        book_rating = float(book_rating)
+    except ValueError:
+        return
+
+    print("%s\t%s" % (book_id, book_rating))
+
+if __name__ == "__main__":
+    for line in sys.stdin:
+        mapper(line)
+
+#Redcuer
+
+#!/usr/bin/env python
+
+from operator import itemgetter
+import sys
+
+def reducer(book_id, book_ratings):
+    total_rating = sum(book_ratings)
+    num_ratings = len(book_ratings)
+    average_rating = total_rating / num_ratings
+    print(book_id, average_rating)
+
+if __name__ == "__main__":
+    current_book_id = None
+    book_ratings = []
+
+    for line in sys.stdin:
+        book_id, rating = line.strip().split('\t')
+        rating = float(rating)
+
+        if current_book_id is None:
+            current_book_id = book_id
+
+        if book_id != current_book_id:
+            reducer(current_book_id, book_ratings)
+            book_ratings = []
+            current_book_id = book_id
+
+        book_ratings.append(rating)
+
+    if current_book_id is not None:
+        reducer(current_book_id, book_ratings)
+
+#Mapred Stream
+time mapred streaming -files mapper.py,reducer.py -input final_animedataset.csv -output asgm -mapper "python3 mapper.py" -reducer "python3 reducer.py"
