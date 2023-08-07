@@ -55,4 +55,5 @@ if __name__ == "__main__":
         reducer(current_book_id, book_ratings)
 
 #Mapred Stream
-time mapred streaming -files mapper.py,reducer.py -input final_animedataset.csv -output asgm -mapper "python3 mapper.py" -reducer "python3 reducer.py"
+time mapred streaming -files mapper.py,reducer.py -input Books_rating.csv -output assignment3 -mapper "python3 mapper.py" -reducer "python3 reducer.py"  
+
